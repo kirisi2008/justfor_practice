@@ -1,0 +1,24 @@
+{
+  "name": "first-npm-install",
+  "version": "1.0.0",
+  "description": "first practice of npm init",
+  "main": "index.js",
+  "scripts": {
+    "test": "react-scripts test --env=jsdom",
+    "lint": "eslint src --fix",
+    "lint:create": "eslint --init"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kirisi2008/justfor_practice.git"
+  },
+  "author": "Kirisi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kirisi2008/justfor_practice/issues"
+  },
+  "homepage": "https://github.com/kirisi2008/justfor_practice#readme",
+  "devDependencies": {
+    "eslint": "^5.7.0"
+  }
+}
