@@ -1,3 +1,6 @@
 {
     "terminal.integrated.shell.windows": "F:\\Supporting_lib\\Git\\bin\\bash.exe",
+    "git.ignoreLimitWarning": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
 }
