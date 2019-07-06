@@ -16,10 +16,10 @@ target_button = driver.find_element(By.XPATH,
   "//td[contains(@class,'fl_g')]//a[contains(text(),'{}')]".format(lib_for_search))
 target_button.click()
 
-time.sleep(1)
-new_window_button = driver.find_element(By.XPATH, 
-  "//span[@id='atarget']")
-new_window_button.click()
+# time.sleep(1)
+# new_window_button = driver.find_element(By.XPATH, 
+#   "//span[@id='atarget']")
+# new_window_button.click()
 
 time.sleep(1)
 image_mode_button = driver.find_element(By.XPATH, 
@@ -39,6 +39,10 @@ while True:
 
             time.sleep(1)
 
+            tabs = driver.window_handles
+            print(tabs)
+            driver.switch_to.window(tabs[1])
+
             describe_text = driver.find_element(By.XPATH, "//td[contains(@id,'postmessage')]")
             print(describe_text.text)
 
@@ -49,7 +53,8 @@ while True:
               big_pic_btn.click()
 
             time.sleep(3)
-            driver.back()
+            driver.close()
+            driver.switch_to.window(tabs[0])
 
             # time.sleep(1)
             # driver.back()
