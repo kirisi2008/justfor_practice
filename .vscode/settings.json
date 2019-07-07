@@ -11,7 +11,7 @@
     "python.linting.enabled": true,
     "python.linting.pylintUseMinimalCheckers": false,
     "python.linting.pylintArgs": [
-        "--disable=C0411,C0103,C0413", 
+        "--disable=C0411,C0103,C0413,W0703",
         "--extension-pkg-whitelist=numpy"
     ],
     "python.pythonPath": "C:\\Users\\Kirisi\\Anaconda3\\python.exe",

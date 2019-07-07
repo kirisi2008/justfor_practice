@@ -16,4 +16,4 @@ def find_element_safe(driver, option, regex):
         return None
 
 
-KEYWORD = ["黑丝", "丝袜 "]
+KEYWORD = ["黑丝", "丝袜"]
