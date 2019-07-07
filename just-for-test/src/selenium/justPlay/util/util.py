@@ -39,4 +39,4 @@ def str2bool(v):
         raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
-KEYWORD = ["黑丝", "丝袜", "吊袜", "旗袍"]
+KEYWORD = ["黑丝", "丝袜", "吊袜", "旗袍", "空姐", "新娘", "教师"]

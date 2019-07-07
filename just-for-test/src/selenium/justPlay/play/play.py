@@ -82,10 +82,10 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
                                               "//a[@class='chked']")
         if image_mode_button:
             image_mode_button.click()
-        task_list, write_date = multiple_craw(driver, rules=sorted(
-            list_mode_lists, reverse=True) if list_mode else None)
 
         while True:
+            task_list, write_date = multiple_craw(driver, rules=sorted(
+                list_mode_lists, reverse=True) if list_mode else None)
             for task in task_list:
                 task_text = task.text
                 try:
@@ -134,6 +134,7 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
     elif select_mode:
         select_mode_urls = lib_for_search
         for url in select_mode_urls:
+            print(url)
             driver.get(url)
             craw(driver, 'SINGLE', select_mode=select_mode)
             print("finished {}".format(url))
@@ -166,6 +167,7 @@ def craw(page_driver, lib_for_search, select_mode=False):
             print("duplicated")
             return
     else:
+        print("不够刺激")
         return
     big_pic_btn = page_driver.find_element(
         By.XPATH, "//a[@class='xi2 attl_m']")
@@ -194,5 +196,10 @@ if __name__ == '__main__':
                         help="Activate nice mode.")
     args = parser.parse_args()
     urls = args.lib
-
-    main(urls[0], select_mode=args.select_mode, list_mode=args.list_mode, list_mode_lists=urls[1:])
+    if args.select_mode:
+        main(urls, select_mode=args.select_mode)
+    else:
+        main(urls[0],
+             select_mode=args.select_mode,
+             list_mode=args.list_mode,
+             list_mode_lists=urls[1:])
