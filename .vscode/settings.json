@@ -1,6 +1,18 @@
 {
     "terminal.integrated.shell.windows": "F:\\Supporting_lib\\Git\\bin\\bash.exe",
     "git.ignoreLimitWarning": true,
+    "[python]": {
+        "editor.rulers": [
+            79,
+            110
+        ]
+    },
     "python.linting.pylintEnabled": true,
     "python.linting.enabled": true,
+    "python.linting.pylintUseMinimalCheckers": false,
+    "python.linting.pylintArgs": [
+        "--disable=C0411,C0103,C0413", 
+        "--extension-pkg-whitelist=numpy"
+    ],
+    "python.pythonPath": "C:\\Users\\Kirisi\\Anaconda3\\python.exe",
 }
