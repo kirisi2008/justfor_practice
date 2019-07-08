@@ -12,22 +12,24 @@ import os
 import requests
 import argparse
 import traceback
+import datetime
 
 datefile_root_path = "F:/New Folder/新しいフォルダー (7)/aisinei/"
 LIB_FOR_SEARCH = "XIAOYU语画界"
 save_path = ""
-date_file = open(datefile_root_path + LIB_FOR_SEARCH + "/date.txt", "r+")
-base_date = dparser.parse(date_file.read(), fuzzy=True).date()
+
 
 finished_tasks = []
 problem_tasks = []
 
 
-def multiple_craw(driver, rules):
+def gen_task_list(driver, rules=None, base_date=None):
     """[summary]
 
     Args:
         driver ([type]): [description]
+        rules ([type], optional): [description]. Defaults to None.
+        base_date ([type], optional): [description]. Defaults to None.
 
     Returns:
         [type]: [description]
@@ -36,7 +38,7 @@ def multiple_craw(driver, rules):
         By.XPATH, "//div[@class='posttitle']//a[@class='st']")
 
     true_task_list = []
-    _write_date = ""
+    _write_date = datetime.datetime.now().date()
 
     for task in task_list:
         task_text = task.text
@@ -48,9 +50,13 @@ def multiple_craw(driver, rules):
             task_date = dparser.parse(task_text.split(" ")[1], fuzzy=True).date()
             if task_date > base_date:
                 true_task_list.append(task)
-                _write_date = task_date
-
-    return true_task_list, _write_date
+                if task_date > _write_date:
+                    print(_write_date)
+                    _write_date = task_date
+    if rules:
+        return true_task_list
+    else:
+        return true_task_list, _write_date
 
 
 def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=None):
@@ -64,6 +70,7 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
     """
     driver = webdriver.Chrome(r'F:/Code/reference/chromedriver/chromedriver.exe')
     if not select_mode:
+
         url = 'https://www.aisinei.net/'
         # Optional argument, if not specified will search path.
         driver.get(url)
@@ -72,10 +79,6 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
             By.XPATH,
             "//td[contains(@class,'fl_g')]//a[contains(text(),'{}')]".format(lib_for_search))
         target_button.click()
-        # time.sleep(1)
-        # new_window_button = driver.find_element(By.XPATH,
-        #   "//span[@id='atarget']")
-        # new_window_button.click()
 
         time.sleep(1)
         image_mode_button = find_element_safe(driver, By.XPATH,
@@ -84,8 +87,19 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
             image_mode_button.click()
 
         while True:
-            task_list, write_date = multiple_craw(driver, rules=sorted(
-                list_mode_lists, reverse=True) if list_mode else None)
+            if list_mode:
+                task_list = gen_task_list(driver, rules=sorted(list_mode_lists, reverse=True))
+            else:
+                task_dir = datefile_root_path + lib_for_search
+                if not os.path.exists(task_dir):
+                    os.makedirs(task_dir)
+                date_file = open(task_dir + "/date.txt", "w+")
+                base_date_date = date_file.read()
+                if base_date_date:
+                    base_date = dparser.parse(base_date_date, fuzzy=True).date()
+                else:
+                    base_date = datetime.date(1900, 1, 1)
+                task_list, write_date = gen_task_list(driver, base_date=base_date)
             for task in task_list:
                 task_text = task.text
                 try:
@@ -94,7 +108,7 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
 
                     tabs = driver.window_handles
                     driver.switch_to.window(tabs[1])
-                    craw(driver, lib_for_search, select_mode=list_mode)
+                    craw(driver, lib_for_search, not_all=list_mode)
                 except Exception:
                     traceback.print_exc()
                     print("{} failed.".format(task_text))
@@ -127,6 +141,7 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
         # search_box.submit()
         time.sleep(2)  # Let the user actually see something!
         if not list_mode:
+            date_file.seek(0)
             date_file.write(write_date.strftime("%Y.%m.%d"))
             date_file.close()
         driver.quit()
@@ -136,12 +151,12 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
         for url in select_mode_urls:
             print(url)
             driver.get(url)
-            craw(driver, 'SINGLE', select_mode=select_mode)
+            craw(driver, 'SINGLE', not_all=select_mode)
             print("finished {}".format(url))
         print("all finished!")
 
 
-def craw(page_driver, lib_for_search, select_mode=False):
+def craw(page_driver, lib_for_search, not_all=False):
     """[summary]
 
     Args:
@@ -155,11 +170,11 @@ def craw(page_driver, lib_for_search, select_mode=False):
     task_text = page_driver.find_element(By.XPATH, "//span[@id='thread_subject']").text
     print(task_text)
     is_target = False
-    if not select_mode:
+    if not not_all:
         desc_text = describe_text.text.split(
             "[套图简介]", 1)[1].split("[会员下载]", 1)[0]
         is_target = any(key_word in desc_text for key_word in KEYWORD)
-    if is_target or select_mode:
+    if is_target or not_all:
         task_dir = datefile_root_path + lib_for_search + "/" + task_text.replace('/', '_')
         if not os.path.exists(task_dir):
             os.makedirs(task_dir)
