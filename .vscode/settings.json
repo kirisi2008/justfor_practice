@@ -15,4 +15,5 @@
         "--extension-pkg-whitelist=numpy"
     ],
     "python.pythonPath": "C:\\Users\\Kirisi\\Anaconda3\\python.exe",
+    "python.envFile": "${workspaceFolder}/.env"
 }

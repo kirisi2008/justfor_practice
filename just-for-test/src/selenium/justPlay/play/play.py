@@ -2,8 +2,9 @@
 
 import sys
 sys.path.append(
-    r'F:/Code/JustFor_Practice/justfor_practice/just-for-test/src/selenium/')
+    r'F:/Code/JustFor_Practice/justfor_practice/just-for-test/src/selenium/justPlay')
 from justPlay.util.util import find_element_safe, KEYWORD, str2bool
+from justPlay.util.constants import ROOT_SAVE_PATH, DEFAULT_LIB
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 import dateutil.parser as dparser
@@ -14,8 +15,7 @@ import argparse
 import traceback
 import datetime
 
-datefile_root_path = "F:/New Folder/新しいフォルダー (7)/aisinei/"
-LIB_FOR_SEARCH = "XIAOYU语画界"
+
 save_path = ""
 
 
@@ -59,7 +59,7 @@ def gen_task_list(driver, rules=None, base_date=None):
         return true_task_list, _write_date
 
 
-def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=None):
+def main(lib_for_search=DEFAULT_LIB, select_mode=False, list_mode=False, list_mode_lists=None):
     """[summary]
 
     Args:
@@ -90,7 +90,7 @@ def main(lib_for_search, select_mode=False, list_mode=False, list_mode_lists=Non
             if list_mode:
                 task_list = gen_task_list(driver, rules=sorted(list_mode_lists, reverse=True))
             else:
-                task_dir = datefile_root_path + lib_for_search
+                task_dir = ROOT_SAVE_PATH + lib_for_search
                 if not os.path.exists(task_dir):
                     os.makedirs(task_dir)
                 date_file = open(task_dir + "/date.txt", "w+")
@@ -175,7 +175,7 @@ def craw(page_driver, lib_for_search, not_all=False):
             "[套图简介]", 1)[1].split("[会员下载]", 1)[0]
         is_target = any(key_word in desc_text for key_word in KEYWORD)
     if is_target or not_all:
-        task_dir = datefile_root_path + lib_for_search + "/" + task_text.replace('/', '_')
+        task_dir = ROOT_SAVE_PATH + lib_for_search + "/" + task_text.replace('/', '_')
         if not os.path.exists(task_dir):
             os.makedirs(task_dir)
         else:
@@ -196,7 +196,7 @@ def craw(page_driver, lib_for_search, not_all=False):
         html = requests.get(pic_src, stream=True)
         with open("{}/{}.png".format(task_dir, index), "wb") as f:
             f.write(html.content)
-        time.sleep(0.35)
+        time.sleep(0.25)
 
 
 if __name__ == '__main__':
